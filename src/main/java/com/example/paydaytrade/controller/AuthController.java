@@ -32,7 +32,7 @@ public class AuthController {
         return authService.authentication(request);
     }
 
-    @GetMapping("/confirmation/{uuid}")
+    @GetMapping("/confirm/{uuid}")
     public ResponseEntity<String> confirmation(@PathVariable UUID uuid){
         return authService.confirmAccount(uuid);
     }

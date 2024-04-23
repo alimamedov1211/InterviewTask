@@ -42,13 +42,13 @@ public class AuthService implements IAuthService {
 
     @Override
     public AuthResponseDto registration(UserRegisterDto request) {
-        Role role=roleRepository.findRoleByName(RolesEnum.USER)
+        Role role = roleRepository.findRoleByName(RolesEnum.USER)
                 .orElseThrow(() -> new RuntimeException("Role not found! "));
 
         User user = getUser(request, role);
 
-        String accessToken=jwtService.generateJwt(user);
-        String refreshToken=jwtService.generateRefreshToken(user);
+        String accessToken = jwtService.generateJwt(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         Jwt jwt = getToken(request, accessToken);
         tokenRepository.save(jwt);
@@ -76,10 +76,10 @@ public class AuthService implements IAuthService {
         }
 
         Optional<User> user = userRepository.findUserByUsernameOrMail(request.getUsername());
-        String accessToken=jwtService.generateJwt(user.orElseThrow());
-        String refreshToken=jwtService.generateRefreshToken(user.orElseThrow());
+        String accessToken = jwtService.generateJwt(user.orElseThrow());
+        String refreshToken = jwtService.generateRefreshToken(user.orElseThrow());
 
-        Jwt token=tokenRepository.findJwtByUser(user.orElseThrow())
+        Jwt token = tokenRepository.findJwtByUser(user.orElseThrow())
                 .orElseThrow(() -> new RuntimeException("Token doesn't exist: " + user));
         token.setJwt(accessToken);
         tokenRepository.save(token);
@@ -93,22 +93,22 @@ public class AuthService implements IAuthService {
 
     @Override
     public AuthResponseDto refreshToken(String authHeader) {
-        if (!securityHelper.authHeaderIsValid(authHeader)){
+        if (!securityHelper.authHeaderIsValid(authHeader)) {
             throw new RuntimeException();
         }
 
-        String jwt=authHeader.substring(7);
-        String username=jwtService.extractUserName(jwt);
+        String jwt = authHeader.substring(7);
+        String username = jwtService.extractUserName(jwt);
 
-        if (username != null){
-            User user=userRepository.findUserByUsernameOrMail(username)
+        if (username != null) {
+            User user = userRepository.findUserByUsernameOrMail(username)
                     .orElseThrow(() -> new RuntimeException("Username doesn't exist: " + username));
-            Jwt token=tokenRepository.findJwtByUser(user)
+            Jwt token = tokenRepository.findJwtByUser(user)
                     .orElseThrow(() -> new RuntimeException("Token doesn't exist: " + user));
 
-            if(jwtService.isJwtValid(jwt,user)){
-                String accessToken=jwtService.generateJwt(user);
-                String refreshToken=jwtService.generateRefreshToken(user);
+            if (jwtService.isJwtValid(jwt, user)) {
+                String accessToken = jwtService.generateJwt(user);
+                String refreshToken = jwtService.generateRefreshToken(user);
 
                 token.setJwt(accessToken);
                 tokenRepository.save(token);
@@ -140,7 +140,7 @@ public class AuthService implements IAuthService {
                 .createdAt(LocalDateTime.now())
                 .build();
         confirmationTokenService.save(token);
-        mailSenderService.sendMail(request.getMail(),token);
+        mailSenderService.sendMail(request.getMail(), token);
         return user;
     }
 
@@ -157,9 +157,9 @@ public class AuthService implements IAuthService {
         return token;
     }
 
-    public ResponseEntity<String> confirmAccount(UUID uuid){
+    public ResponseEntity<String> confirmAccount(UUID uuid) {
         ConfirmToken jwt = confirmationTokenService.getTokenByUUID(uuid.toString());
-        if (jwt != null){
+        if (jwt != null) {
             User user = jwt.getUser();
             user.setEnable(true);
             userRepository.save(user);
@@ -167,7 +167,7 @@ public class AuthService implements IAuthService {
             jwt.setConfirmedAt(LocalDateTime.now());
             confirmationTokenService.save(jwt);
             return ResponseEntity.ok().body(user.getMail() + " Confirmation is successfully");
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Link is invalid");
         }
 
