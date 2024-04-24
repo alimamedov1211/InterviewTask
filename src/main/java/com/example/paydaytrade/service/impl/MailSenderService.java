@@ -8,7 +8,6 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +19,6 @@ public class MailSenderService {
     //@Value("${application.security.confirmation.url}")
     private final String confirmationPath = "http://localhost:8082/auth/confirm/";
 
-    @Async
     public void sendMail(String email, ConfirmToken confirmToken) {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -28,6 +26,7 @@ public class MailSenderService {
 
 
         try{
+            System.out.println("-----------1-----------");
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setSubject("Account activation!");
 
@@ -37,11 +36,13 @@ public class MailSenderService {
                     + "</body></html>";
 
             mimeMessageHelper.setText(emailContent, true);
-
+            System.out.println("-----------2-----------");
             javaMailSender.send(mimeMessage);
+            System.out.println("-----------3-----------");
 
         }
         catch (MessagingException e) {
+            System.out.println("-----------4-----------");
             throw new ApplicationException(Exceptions.MESSAGE_NOT_SEND_EXCEPTION);
         }
 

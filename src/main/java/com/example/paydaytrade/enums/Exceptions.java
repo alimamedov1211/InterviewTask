@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum Exceptions {
     TOKEN_INVALID_EXCEPTION(HttpStatus.BAD_REQUEST, "Token is invalid!"),
     TOKEN_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND,"Token not found!"),
-    MESSAGE_NOT_SEND_EXCEPTION(HttpStatus.BAD_GATEWAY,"Message can't be send!");
+    MESSAGE_NOT_SEND_EXCEPTION(HttpStatus.BAD_GATEWAY,"Error occured when sending mail!");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -1,11 +1,11 @@
 package com.example.paydaytrade.service.security;
 
 import com.example.paydaytrade.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class SecurityHelper {
