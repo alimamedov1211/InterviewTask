@@ -17,7 +17,6 @@ import com.example.paydaytrade.service.IAuthService;
 import com.example.paydaytrade.service.security.JwtService;
 import com.example.paydaytrade.service.security.SecurityHelper;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

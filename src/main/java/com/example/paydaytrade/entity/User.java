@@ -34,6 +34,7 @@ public class User implements UserDetails {
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST},fetch = FetchType.EAGER)
     @JoinColumn(name = "token_id")
+
     Jwt jwt;
 
     @ManyToOne
