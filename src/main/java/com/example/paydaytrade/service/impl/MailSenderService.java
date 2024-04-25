@@ -26,7 +26,6 @@ public class MailSenderService {
 
 
         try{
-            System.out.println("-----------1-----------");
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setSubject("Account activation!");
 
@@ -36,13 +35,10 @@ public class MailSenderService {
                     + "</body></html>";
 
             mimeMessageHelper.setText(emailContent, true);
-            System.out.println("-----------2-----------");
             javaMailSender.send(mimeMessage);
-            System.out.println("-----------3-----------");
 
         }
         catch (MessagingException e) {
-            System.out.println("-----------4-----------");
             throw new ApplicationException(Exceptions.MESSAGE_NOT_SEND_EXCEPTION);
         }
 

@@ -7,7 +7,9 @@ import com.example.paydaytrade.entity.ConfirmToken;
 import com.example.paydaytrade.entity.Jwt;
 import com.example.paydaytrade.entity.Role;
 import com.example.paydaytrade.entity.User;
+import com.example.paydaytrade.enums.Exceptions;
 import com.example.paydaytrade.enums.RolesEnum;
+import com.example.paydaytrade.exceptions.ApplicationException;
 import com.example.paydaytrade.repository.RoleRepository;
 import com.example.paydaytrade.repository.TokenRepository;
 import com.example.paydaytrade.repository.UserRepository;
@@ -15,6 +17,7 @@ import com.example.paydaytrade.service.IAuthService;
 import com.example.paydaytrade.service.security.JwtService;
 import com.example.paydaytrade.service.security.SecurityHelper;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,8 +45,21 @@ public class AuthService implements IAuthService {
 
     @Override
     public AuthResponseDto registration(UserRegisterDto request) {
+
+        String username = request.getUsername();
+        String email = request.getMail();
+
+        if (userRepository.findUserByUsernameOrMail(username).isPresent()) {
+            throw new ApplicationException(Exceptions.DUPLICATE_EMAIL_OR_USERNAME_EXCEPTION);
+        }
+
+        if (userRepository.findUserByUsernameOrMail(email).isPresent()) {
+            throw new ApplicationException(Exceptions.DUPLICATE_EMAIL_OR_USERNAME_EXCEPTION);
+        }
+
         Role role = roleRepository.findRoleByName(RolesEnum.USER)
                 .orElseThrow(() -> new RuntimeException("Role not found! "));
+
 
         User user = getUser(request, role);
 
@@ -72,7 +88,7 @@ public class AuthService implements IAuthService {
                     )
             );
         } catch (Exception e) {
-            throw new RuntimeException("Authentication failed", e);
+            throw new ApplicationException(Exceptions.WRONG_PASSWORD_OR_USERNAME_EXCEPTION);
         }
 
         Optional<User> user = userRepository.findUserByUsernameOrMail(request.getUsername());
