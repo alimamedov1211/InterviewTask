@@ -7,17 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UserProduct {
+public class UserStock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     String symbol;
     String name;
     String currency;
@@ -25,16 +25,18 @@ public class UserProduct {
     String mic_code;
     String country;
     String type;
-    int buyPrice;
-    int sellPrice;
+    double buyPrice;
+    double sellPrice;
+
     @Builder.Default
     boolean buyStatus = false;
+
     @Builder.Default
     boolean sellStatus = false;
+
     @Builder.Default
     boolean sellRequest = false;
 
     @ManyToOne
-    User user_;
-
+    User user;
 }

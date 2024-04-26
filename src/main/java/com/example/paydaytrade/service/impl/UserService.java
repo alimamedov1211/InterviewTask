@@ -7,6 +7,7 @@ import com.example.paydaytrade.enums.Exceptions;
 import com.example.paydaytrade.exceptions.ApplicationException;
 import com.example.paydaytrade.repository.UserRepository;
 import com.example.paydaytrade.service.IUserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
@@ -33,16 +34,5 @@ public class UserService implements IUserService {
         else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new GeneralResponseDto("Username or Password is wrong!"));
         }
-    }
-
-    @Override
-    public ResponseEntity<GeneralResponseDto> decreaseBalance(int price, User user) {
-        return null;
-    }
-
-
-    @Override
-    public boolean checkBudget(int price, User user) {
-        return user.getWallet() >= price;
     }
 }

@@ -7,7 +7,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface IUserService {
     ResponseEntity<GeneralResponseDto> increaseBalance(IncreaseBalanceRequestDto requestDto);
-    ResponseEntity<GeneralResponseDto> decreaseBalance(int price, User user);
-    boolean checkBudget(int price, User user);
 
 }

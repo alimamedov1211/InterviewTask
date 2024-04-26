@@ -41,8 +41,8 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id")
     Role role;
 
-    @OneToMany(mappedBy = "user_")
-    List<UserProduct> userProducts;
+    @OneToMany(mappedBy = "user")
+    List<UserStock> userStock;
 
 
     @Override
