@@ -1,5 +1,6 @@
 package com.example.paydaytrade.service.security;
 
+import com.example.paydaytrade.enums.RolesEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +31,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(CsrfConfigurer::disable)
-                .authorizeHttpRequests(requests -> requests.requestMatchers("/auth/**").permitAll())
+                .authorizeHttpRequests(requests -> requests.requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/user/*", "/stocks/**").hasRole(RolesEnum.USER.name()))
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
