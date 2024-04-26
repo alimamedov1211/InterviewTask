@@ -34,7 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader=request.getHeader(HttpHeaders.AUTHORIZATION);
-
         if (securityHelper.servletPathIsAuth((HttpServletRequest) request) || !securityHelper.authHeaderIsValid(authHeader)){
             filterChain.doFilter(request,response);
             return;
@@ -53,14 +52,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (securityHelper.tokenIsDead(userDetails)){
                 throw new RuntimeException("Token is dead");
             }
-
             if (jwtService.isJwtValid(jwt,userDetails)){
                 UsernamePasswordAuthenticationToken userAuth=new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
                         userDetails.getAuthorities()
                 );
-
                 userAuth.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails((jakarta.servlet.http.HttpServletRequest) request)
                 );

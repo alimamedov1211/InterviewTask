@@ -1,7 +1,7 @@
 package com.example.paydaytrade.service.security;
 
 import com.example.paydaytrade.entity.Jwt;
-import com.example.paydaytrade.repository.TokenRepository;
+import com.example.paydaytrade.repository.JwtRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class LogoutService implements LogoutHandler {
 
     private final SecurityHelper securityHelper;
-    private final TokenRepository tokenRepository;
+    private final JwtRepository jwtRepository;
 
     @Override
     public void logout(
@@ -29,14 +29,14 @@ public class LogoutService implements LogoutHandler {
         if (securityHelper.authHeaderIsValid(authHeader)) {
             String jwt = authHeader.substring(7);
 
-            Optional<Jwt> tokenOptional = tokenRepository.findJwtByJwt(jwt);
+            Optional<Jwt> tokenOptional = jwtRepository.findJwtByJwt(jwt);
 
             if (tokenOptional.isPresent()) {
                 Jwt token = tokenOptional.get();
                 token.setExpired(true);
                 token.setRevoked(true);
 
-                tokenRepository.save(token);
+                jwtRepository.save(token);
 
                 SecurityContextHolder.clearContext();
             }

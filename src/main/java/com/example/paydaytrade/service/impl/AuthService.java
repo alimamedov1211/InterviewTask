@@ -10,8 +10,8 @@ import com.example.paydaytrade.entity.User;
 import com.example.paydaytrade.enums.Exceptions;
 import com.example.paydaytrade.enums.RolesEnum;
 import com.example.paydaytrade.exceptions.ApplicationException;
+import com.example.paydaytrade.repository.JwtRepository;
 import com.example.paydaytrade.repository.RoleRepository;
-import com.example.paydaytrade.repository.TokenRepository;
 import com.example.paydaytrade.repository.UserRepository;
 import com.example.paydaytrade.service.IAuthService;
 import com.example.paydaytrade.service.security.JwtService;
@@ -37,7 +37,7 @@ public class AuthService implements IAuthService {
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
     private final SecurityHelper securityHelper;
-    private final TokenRepository tokenRepository;
+    private final JwtRepository jwtRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailSenderService mailSenderService;
     private final ConfirmTokenService confirmationTokenService;
@@ -66,7 +66,7 @@ public class AuthService implements IAuthService {
         String refreshToken = jwtService.generateRefreshToken(user);
 
         Jwt jwt = getToken(request, accessToken);
-        tokenRepository.save(jwt);
+        jwtRepository.save(jwt);
         user.setJwt(jwt);
         userRepository.save(user);
 
@@ -94,10 +94,10 @@ public class AuthService implements IAuthService {
         String accessToken = jwtService.generateJwt(user.orElseThrow());
         String refreshToken = jwtService.generateRefreshToken(user.orElseThrow());
 
-        Jwt token = tokenRepository.findJwtByUser(user.orElseThrow())
+        Jwt token = jwtRepository.findJwtByUser(user.orElseThrow())
                 .orElseThrow(() -> new RuntimeException("Token doesn't exist: " + user));
         token.setJwt(accessToken);
-        tokenRepository.save(token);
+        jwtRepository.save(token);
 
         return AuthResponseDto.builder()
                 .message(user.orElseThrow().getMail() + " login is successfully")
@@ -118,7 +118,7 @@ public class AuthService implements IAuthService {
         if (username != null) {
             User user = userRepository.findUserByUsernameOrMail(username)
                     .orElseThrow(() -> new RuntimeException("Username doesn't exist: " + username));
-            Jwt token = tokenRepository.findJwtByUser(user)
+            Jwt token = jwtRepository.findJwtByUser(user)
                     .orElseThrow(() -> new RuntimeException("Token doesn't exist: " + user));
 
             if (jwtService.isJwtValid(jwt, user)) {
@@ -126,7 +126,7 @@ public class AuthService implements IAuthService {
                 String refreshToken = jwtService.generateRefreshToken(user);
 
                 token.setJwt(accessToken);
-                tokenRepository.save(token);
+                jwtRepository.save(token);
                 return AuthResponseDto.builder()
                         .message(username + "refreshing is successfully")
                         .accessToken(accessToken)
